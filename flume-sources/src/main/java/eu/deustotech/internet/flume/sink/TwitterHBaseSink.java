@@ -110,13 +110,21 @@ public class TwitterHBaseSink extends AbstractSink implements Configurable {
                         iterateJSONArray((JSONArray) arrayObject, put, qualifier + ":" + i);
                     } else {
                         String value = String.valueOf(arrayObject);
-                        put.add(Bytes.toBytes(columnFamily), Bytes.toBytes(qualifier), Bytes.toBytes(value));
+                        if (value != null) {
+                            put.add(Bytes.toBytes(columnFamily), Bytes.toBytes(qualifier + ":" + i), Bytes.toBytes(value));
+                        } else {
+                            put.add(Bytes.toBytes(columnFamily), Bytes.toBytes(qualifier + ":" + i), null);
+                        }
                     }
                 }
             }
             else {
                 String value = String.valueOf(object);
-                put.add(Bytes.toBytes(columnFamily), Bytes.toBytes(qualifier), Bytes.toBytes(value));
+                if (value != null) {
+                    put.add(Bytes.toBytes(columnFamily), Bytes.toBytes(qualifier), Bytes.toBytes(value));
+                } else {
+                    put.add(Bytes.toBytes(columnFamily), Bytes.toBytes(qualifier), null);
+                }
             }
         }
         return put;
